@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Atlas AI</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #101827;
+      color: white;
+      text-align: center;
+      padding: 40px 16px;
+    }
+    main {
+      max-width: 700px;
+      margin: auto;
+      background: #1e293b;
+      padding: 24px;
+      border-radius: 16px;
+    }
+    input, button {
+      padding: 12px;
+      border-radius: 8px;
+      border: 0;
+      margin: 5px;
+    }
+    input { width: 65%; }
+    button { cursor: pointer; background: #38bdf8; }
+    #answer { white-space: pre-wrap; text-align: left; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>🌐 Atlas AI</h1>
+    <p>Seu assistente inteligente</p>
+    <input id="question" placeholder="Digite sua pergunta">
+    <button onclick="askAtlas()">Enviar</button>
+    <p id="answer">Olá! Sou o Atlas AI.</p>
+  </main>
+  <script>
+    async function askAtlas() {
+      const question = document.getElementById("question").value.trim();
+      const answer = document.getElementById("answer");
+      if (!question) {
+        answer.textContent = "Digite uma pergunta primeiro.";
+        return;
+      }
+      answer.textContent = "Pensando...";
+      try {
+        const response = await fetch("/api/chat", {
+          method: "POST",
+          headers: {"Content-Type": "application/json"},
+          body: JSON.stringify({message: question})
+        });
+        const data = await response.json();
+        answer.textContent = data.reply || data.detail || "Não consegui responder.";
+      } catch {
+        answer.textContent = "Não consegui conectar ao servidor do Atlas AI.";
+      }
+    }
+  </script>
+</body>
+</html>
